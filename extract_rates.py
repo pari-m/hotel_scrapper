@@ -12,10 +12,10 @@ BASE_URL = "https://www.qantas.com/hotels/api/ui/properties/"
 class Rate(BaseModel):
     room_name: str
     rate_name: str
-    num_guests: int
+    no_of_guests: int
     cancellation_policy: str
     price: float
-    top_deal: bool
+    best_deal: bool
     currency: str
     timestamp: str
 
@@ -58,10 +58,10 @@ class HotelDetailsScraper:
                 rate = Rate(
                     room_name=room_type.get("name"),
                     rate_name=offer.get("name"),
-                    num_guests=room_type.get("maxOccupantCount"),
+                    no_of_guests=room_type.get("maxOccupantCount"),
                     cancellation_policy=offer.get("cancellationPolicy", {}).get("description"),
                     price=offer.get("charges", {}).get("total", {}).get("amount"),
-                    top_deal=offer.get("promotion", {}).get("name", "") == "Top Deal",
+                    best_deal=offer.get("promotion", {}).get("name", "") == "Top Deal",
                     currency=offer.get("charges", {}).get("total", {}).get("currency"),
                     timestamp=datetime.now().isoformat()
                 )
@@ -73,16 +73,16 @@ class HotelDetailsScraper:
         with open(csv_write_file_path, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(
-                ['Room Name', 'Rate Name', 'Num Guests', 'Cancellation Policy', 'Price', 'Top Deal', 'Currency',
+                ['Room Name', 'Rate Name', 'Number of Guests', 'Cancellation Policy', 'Price', 'Top Deal', 'Currency',
                  'Timestamp'])
             for rate in self.rates:
                 writer.writerow([
                     rate.room_name,
                     rate.rate_name,
-                    rate.num_guests,
+                    rate.no_of_guests,
                     rate.cancellation_policy,
                     rate.price,
-                    rate.top_deal,
+                    rate.best_deal,
                     rate.currency,
                     rate.timestamp
                 ])
